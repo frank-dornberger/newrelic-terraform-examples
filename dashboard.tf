@@ -169,6 +169,26 @@ resource "newrelic_dashboard" "exampledash" {
     width = 3
   }
 
+  widget {
+    title = "Apdex"
+    visualization = "faceted_line_chart"
+    nrql = "SELECT apdex(duration) FROM Transaction SINCE 1 week ago FACET appName TIMESERIES AUTO LIMIT 5"
+    row = 6
+    height = 3
+    column = 3
+    width = 4
+  }
+
+widget {
+    title = "Throughput per Apdex-Zone"
+    visualization = "faceted_area_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET apdexPerfZone TIMESERIES AUTO"
+    row = 9
+    height = 3
+    column = 1
+    width = 3
+  }
+
   # widget {
   #   title = "Apdex, top 5 by host"
   #   duration = 1800000
