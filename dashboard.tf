@@ -39,33 +39,57 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "markdown"
     source = "### Helpful Links\n\n* [New Relic One](https://one.newrelic.com)\n* [Developer Portal](https://developer.newrelic.com)"
     row = 1
+    height = 2
     column = 1
+    width = 2
   }
 
   widget {
-    title = "Requests per minute"
-    visualization = "billboard"
-    nrql = "SELECT rate(count(*), 1 minute) FROM Transaction"
+    title = "Slowest Apps"
+    visualization = "facet_bar_chart"
+    nrql = "SELECT average(duration*1000) FROM Transaction FACET appName SINCE 15 minutes ago LIMIT 7"
     row = 1
-    column = 2
+    height = 5
+    column = 3
+    width = 2
   }
 
   widget {
     title = "Error rate"
-    visualization = "gauge"
-    nrql = "SELECT percentage(count(*), WHERE error IS True) FROM Transaction"
-    threshold_red = 2.5
+    visualization = "facet_bar_chart"
+    nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago FACET appName LIMIT 7"
     row = 1
-    column = 2
+    height = 5
+    column = 5
+    width = 2
   }
 
   widget {
-    title = "Average transaction duration, by application"
-    visualization = "facet_bar_chart"
-    nrql = "SELECT average(duration) FROM Transaction FACET appName"
+    title = "Current App Response time"
+    visualization = "gauge"
+    nrql = "SELECT average(duration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
+
+    threshold_red = 500
+
     row = 1
-    column = 3
+    height = 2
+    column = 7
+    width = 3
   }
+
+  widget {
+    title = "Current App Error percentage"
+    visualization = "gauge"
+    nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago"
+
+    threshold_red = 0.5
+
+    row = 1
+    height = 2
+    column = 10
+    width = 3
+  }
+  
 
   # widget {
   #   title = "Apdex, top 5 by host"
