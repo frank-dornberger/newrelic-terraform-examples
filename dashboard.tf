@@ -90,6 +90,84 @@ resource "newrelic_dashboard" "exampledash" {
     width = 3
   }
   
+  widget {
+    title = "Current DB Response Time"
+    visualization = "gauge"
+    nrql = "SELECT average(databaseDuration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
+
+    threshold_red = 100
+
+    row = 3
+    height = 2
+    column = 1
+    width = 2
+  }
+  
+  widget {
+    title = "Current 3rd Party Response Time"
+    visualization = "gauge"
+    nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
+
+    threshold_red = 150
+
+    row = 5
+    height = 2
+    column = 1
+    width = 2
+  }
+
+  widget {
+    title = "Non 20x HTTP rate"
+    visualization = "gauge"
+    nrql = "SELECT filter(count(*), WHERE httpResponseCode NOT LIKE '20%')*100/count(*) AS 'Non 20x' FROM Transaction SINCE 15 minutes ago"
+
+    threshold_red = 5
+
+    row = 7
+    height = 2
+    column = 1
+    width = 2
+  }
+
+  widget {
+    title = "App Error percentage - week over week"
+    visualization = "line_chart"
+    nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage', 0.5 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    row = 3
+    height = 3
+    column = 7
+    width = 3
+  }
+
+  widget {
+    title = "App Response Time - Average, Top 90%, and SLA (500 ms) - week over week"
+    visualization = "line_chart"
+    nrql = "SELECT average(duration*1000) AS 'Average', percentile(duration*1000, 90) AS 'Top', 500 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    row = 3
+    height = 3
+    column = 10
+    width = 3
+  }
+
+  widget {
+    title = "Database Response Time - Average, Top 90%, and SLA (100 ms) - week over week"
+    visualization = "line_chart"
+    nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)', percentile(externalDuration*1000, 90) AS 'Top 90% (ms)', 150 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    row = 6
+    height = 3
+    column = 7
+    width = 3
+  }
+
+  widget {
+    title = "Throughput by HTTP Response Code"
+    visualization = "faceted_area_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET httpResponseCode TIMESERIES AUTO LIMIT 20"
+    row = 6
+    height = 3
+    column = 10
+    width = 3
+  }
 
   # widget {
   #   title = "Apdex, top 5 by host"
@@ -107,12 +185,4 @@ resource "newrelic_dashboard" "exampledash" {
   #   row = 2
   #   column = 1
   # }
-
-  widget {
-    title = "Requests per minute, by transaction"
-    visualization = "facet_table"
-    nrql = "SELECT rate(count(*), 1 minute) FROM Transaction FACET name"
-    row = 2
-    column = 2
-  }
 }
