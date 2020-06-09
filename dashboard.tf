@@ -11,17 +11,30 @@ resource "newrelic_dashboard" "exampledash" {
   # Defaults to all.
   visibility = "all"
 
-  ## A nested block that describes a dashboard filter. 
-  ## Exactly one nested filter block is allowed.
-  # filter {
-  #   event_types = [
-  #       "Transaction"
-  #   ]
-  #   attributes = [
-  #       "appName",
-  #       "name"
-  #   ]
-  # }
+  # A nested block that describes a dashboard filter. 
+  # Exactly one nested filter block is allowed.
+  # The below is an exhaustive example for the eventType Transaction.
+  # If you use custom_attributes, you may want to extend the below list.
+  filter {
+    event_types = [
+        "Transaction"
+    ]
+    attributes = [
+        "appName",
+        "error",
+        "httpResponseCode",
+        "name",
+        "port",
+        "request.headers.userAgent",
+        "request.method",
+        "request.uri",
+        "response.headers.contentType",
+        "sampled",
+        "traceId",
+        "transactionSubType",
+        "transactionType"
+    ]
+  }
 
   # The icon for the dashboard. 
   # Valid values are adjust, archive, bar-chart, bell, bolt, bug, bullhorn, bullseye, clock-o, cloud, cog, comments-o, crosshairs, 
