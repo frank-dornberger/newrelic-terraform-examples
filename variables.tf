@@ -1,3 +1,8 @@
+variable "3rd_party_duration_sla" {
+  description = "The SLA in ms of your 3rd party response time. Default 150"
+  default = 150
+}
+
 variable "app_duration_sla" {
   description = "The SLA in ms of your Application response time. Default 500"
   default = 500
@@ -22,5 +27,10 @@ variable "logo_url" {
 }
 
 variable "my_admin_api_key" {
-    description = "The New Relic Admin API key required to create Dashboards."
+  description = "The New Relic Admin API key required to create Dashboards."
+}
+
+variable "non_http_20x_rate" {
+  description = "The SLA in percents of your HTTP responses being non 20x. Default is 5"
+  default = 5
 }

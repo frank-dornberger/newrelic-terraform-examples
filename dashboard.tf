@@ -32,12 +32,14 @@ resource "newrelic_dashboard" "exampledash" {
 
   # There are 2 types of Dashboards supported, classic Insights Dashboards with a 3 solumn
   # layout and NR One Dashboards with a 12 column layout. Supported values are 3 and 12.
+  # Defaults to 3.
   grid_column_count = 12
 
   widget {
     title = "Dashboard Note"
     visualization = "markdown"
     source = "![Image](${var.logo_url})\n\n[k8s Cluster Explorer](https://one.eu.newrelic.com/launcher/k8s-cluster-explorer-nerdlet.cluster-explorer-launcher)\n\n[NR AI](https://one.eu.newrelic.com/launcher/nrai.launcher)"
+    
     row = 1
     height = 2
     column = 1
@@ -116,7 +118,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = 150
+    threshold_red = var.3rd_party_duration_sla
 
     row = 5
     height = 2
@@ -129,7 +131,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT filter(count(*), WHERE httpResponseCode NOT LIKE '20%')*100/count(*) AS 'Non 20x' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = 5
+    threshold_red = var.non_http_20x_rate
 
     row = 7
     height = 2
