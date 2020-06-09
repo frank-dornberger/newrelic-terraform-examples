@@ -118,7 +118,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = var.3rd_party_duration_sla
+    threshold_red = var.third_party_duration_sla
 
     row = 5
     height = 2
