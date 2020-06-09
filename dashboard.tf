@@ -1,5 +1,5 @@
 resource "newrelic_dashboard" "exampledash" {
-  title = "New Relic Terraform Example"
+  title = "APM Overview"
 
   # Determines who can edit the dashboard in an account. 
   # Valid values are all, editable_by_all, editable_by_owner, or read_only. 
@@ -37,7 +37,7 @@ resource "newrelic_dashboard" "exampledash" {
   widget {
     title = "Dashboard Note"
     visualization = "markdown"
-    source = "### Helpful Links\n\n* [New Relic One](https://one.newrelic.com)\n* [Developer Portal](https://developer.newrelic.com)"
+    source = "![Image](${var.logo_url})\n\n[k8s Cluster Explorer](https://one.eu.newrelic.com/launcher/k8s-cluster-explorer-nerdlet.cluster-explorer-launcher)\n\n[NR AI](https://one.eu.newrelic.com/launcher/nrai.launcher)"
     row = 1
     height = 2
     column = 1
@@ -45,9 +45,13 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "Slowest Apps"
+    title = "Top 7 Slowest Apps (in ms)"
     visualization = "facet_bar_chart"
     nrql = "SELECT average(duration*1000) FROM Transaction FACET appName SINCE 15 minutes ago LIMIT 7"
+    
+    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    drilldown_dashboard_id = 36084
+
     row = 1
     height = 5
     column = 3
@@ -55,9 +59,13 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "Error rate"
+    title = "Top 7 Error rate (in %)"
     visualization = "facet_bar_chart"
     nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago FACET appName LIMIT 7"
+    
+    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    drilldown_dashboard_id = 36084
+
     row = 1
     height = 5
     column = 5
@@ -69,7 +77,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT average(duration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = 500
+    threshold_red = var.app_duration_sla
 
     row = 1
     height = 2
@@ -95,7 +103,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT average(databaseDuration*1000) AS 'Average (ms)' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = 100
+    threshold_red = var.db_duration_sla
 
     row = 3
     height = 2
@@ -130,9 +138,10 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "App Error percentage - week over week"
+    title = "App Error percentage - Average, and SLA (0.5 %) - week over week"
     visualization = "line_chart"
     nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage', 0.5 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    
     row = 3
     height = 3
     column = 7
@@ -140,9 +149,10 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "App Response Time - Average, Top 90%, and SLA (500 ms) - week over week"
+    title = "App Response Time - Average, Top 90%, and SLA (${var.app_duration_sla} ms) - week over week"
     visualization = "line_chart"
-    nrql = "SELECT average(duration*1000) AS 'Average', percentile(duration*1000, 90) AS 'Top', 500 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    nrql = "SELECT average(duration*1000) AS 'Average', percentile(duration*1000, 90) AS 'Top', ${var.app_duration_sla} AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    
     row = 3
     height = 3
     column = 10
@@ -150,9 +160,10 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "Database Response Time - Average, Top 90%, and SLA (100 ms) - week over week"
+    title = "Database Response Time - Average, Top 90%, and SLA (${var.db_duration_sla} ms) - week over week"
     visualization = "line_chart"
-    nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)', percentile(externalDuration*1000, 90) AS 'Top 90% (ms)', 150 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    nrql = "SELECT average(externalDuration*1000) AS 'Average (ms)', percentile(externalDuration*1000, 90) AS 'Top 90% (ms)', ${var.db_duration_sla} AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    
     row = 6
     height = 3
     column = 7
@@ -163,6 +174,7 @@ resource "newrelic_dashboard" "exampledash" {
     title = "Throughput by HTTP Response Code"
     visualization = "faceted_area_chart"
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET httpResponseCode TIMESERIES AUTO LIMIT 20"
+    
     row = 6
     height = 3
     column = 10
@@ -173,20 +185,75 @@ resource "newrelic_dashboard" "exampledash" {
     title = "Apdex"
     visualization = "faceted_line_chart"
     nrql = "SELECT apdex(duration) FROM Transaction SINCE 1 week ago FACET appName TIMESERIES AUTO LIMIT 5"
+    
     row = 6
     height = 3
     column = 3
     width = 4
   }
 
-widget {
+  widget {
     title = "Throughput per Apdex-Zone"
     visualization = "faceted_area_chart"
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET apdexPerfZone TIMESERIES AUTO"
+    
     row = 9
     height = 3
     column = 1
     width = 3
+  }
+
+  widget {
+    title = "Throughput by Function"
+    visualization = "facet_bar_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET name limit 50"
+    
+    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    drilldown_dashboard_id = 36084
+
+    row = 9
+    height = 3
+    column = 4
+    width = 5
+  }
+
+  widget {
+    title = "HTTP response codes"
+    visualization = "facet_pie_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET httpResponseCode limit 50"
+    
+    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    drilldown_dashboard_id = 36084
+
+    row = 9
+    height = 3
+    column = 9
+    width = 4
+  }
+
+  widget {
+    title = "Throughput by Host"
+    visualization = "facet_pie_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET host limit 50"
+    
+    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    drilldown_dashboard_id = 36084
+
+    row = 12
+    height = 3
+    column = 1
+    width = 6
+  }
+
+widget {
+    title = "Throughput per Host"
+    visualization = "faceted_area_chart"
+    nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET host TIMESERIES AUTO LIMIT 20"
+    
+    row = 12
+    height = 3
+    column = 7
+    width = 6
   }
 
   # widget {
