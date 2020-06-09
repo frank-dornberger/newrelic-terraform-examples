@@ -50,7 +50,7 @@ resource "newrelic_dashboard" "exampledash" {
     nrql = "SELECT average(duration*1000) FROM Transaction FACET appName SINCE 15 minutes ago LIMIT 7"
     
     # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
-    drilldown_dashboard_id = 36084
+    drilldown_dashboard_id = var.dashboard_id
 
     row = 1
     height = 5
@@ -64,7 +64,7 @@ resource "newrelic_dashboard" "exampledash" {
     nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago FACET appName LIMIT 7"
     
     # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
-    drilldown_dashboard_id = 36084
+    drilldown_dashboard_id = var.dashboard_id
 
     row = 1
     height = 5
@@ -90,7 +90,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "gauge"
     nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago"
 
-    threshold_red = 0.5
+    threshold_red = var.app_error_sla
 
     row = 1
     height = 2
@@ -138,9 +138,9 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "App Error percentage - Average, and SLA (0.5 %) - week over week"
+    title = "App Error percentage - Average, and SLA (${var.app_error_sla} %) - week over week"
     visualization = "line_chart"
-    nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage', 0.5 AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
+    nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage', ${var.app_error_sla} AS 'SLA' FROM Transaction SINCE 1 week ago TIMESERIES AUTO COMPARE WITH 1 week ago"
     
     row = 3
     height = 3
@@ -182,9 +182,9 @@ resource "newrelic_dashboard" "exampledash" {
   }
 
   widget {
-    title = "Apdex"
+    title = "Apdex Top 5 Apps"
     visualization = "faceted_line_chart"
-    nrql = "SELECT apdex(duration) FROM Transaction SINCE 1 week ago FACET appName TIMESERIES AUTO LIMIT 5"
+    nrql = "SELECT apdex(duration*1000, t: ${var.app_duration_sla}) FROM Transaction SINCE 1 week ago FACET appName TIMESERIES AUTO LIMIT 5"
     
     row = 6
     height = 3
@@ -209,7 +209,7 @@ resource "newrelic_dashboard" "exampledash" {
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET name limit 50"
     
     # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
-    drilldown_dashboard_id = 36084
+    drilldown_dashboard_id = var.dashboard_id
 
     row = 9
     height = 3
@@ -223,7 +223,7 @@ resource "newrelic_dashboard" "exampledash" {
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET httpResponseCode limit 50"
     
     # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
-    drilldown_dashboard_id = 36084
+    drilldown_dashboard_id = var.dashboard_id
 
     row = 9
     height = 3
@@ -237,7 +237,7 @@ resource "newrelic_dashboard" "exampledash" {
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET host limit 50"
     
     # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
-    drilldown_dashboard_id = 36084
+    drilldown_dashboard_id = var.dashboard_id
 
     row = 12
     height = 3
