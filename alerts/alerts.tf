@@ -20,7 +20,7 @@ resource "newrelic_alert_condition" "apm_apdex" {
 
   # Required
   policy_id = newrelic_alert_policy.policy.id
-  name        = "${var.app_name}'s Apdex below <${var.apdex_threshold} for ${var.condition_duration} mins"
+  name        = "${var.app_name}'s Apdex below ${var.apdex_threshold} for ${var.condition_duration} mins"
   type        = "apm_app_metric"
   entities    = [data.newrelic_application.app.id]
   metric      = "apdex"
@@ -57,7 +57,7 @@ resource "newrelic_alert_condition" "key_transaction_error_rate" {
 
   # Required
   policy_id = newrelic_alert_policy.policy.id
-  name        = "${var.key_transaction_name}'s Error rate above <${var.key_transaction_error_rate}% for ${var.condition_duration} mins"
+  name        = "${var.key_transaction_name}'s Error rate above ${var.key_transaction_error_rate}% for ${var.condition_duration} mins"
   type        = "apm_kt_metric"
   entities    = [data.newrelic_key_transaction.txn.id]
   metric      = "error_percentage"
@@ -69,7 +69,7 @@ resource "newrelic_alert_condition" "key_transaction_error_rate" {
     time_function = "all" # Options are all or any.
 
     # Optional
-    operator      = "below" # Options are: above, below, or equal. Defaults to equal.
+    operator      = "above" # Options are: above, below, or equal. Defaults to equal.
     priority      = "critical" # Options are: critical, or warning. Defaults to critical.
   }
   
@@ -91,7 +91,7 @@ resource "newrelic_alert_condition" "browser_response_time" {
 
   # Required
   policy_id = newrelic_alert_policy.policy.id
-  name        = "Browser Page Load Time >${var.browser_duration_threshold}s for ${var.condition_duration} mins"
+  name        = "Browser Page Load Time above ${var.browser_duration_threshold}s for ${var.condition_duration} mins"
   type        = "browser_metric"
 
   # for isolated Browser apps, it only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/309 is resolved. 
@@ -105,7 +105,7 @@ resource "newrelic_alert_condition" "browser_response_time" {
     time_function = "all" # Options are all or any.
 
     # Optional
-    operator      = "below" # Options are: above, below, or equal. Defaults to equal.
+    operator      = "above" # Options are: above, below, or equal. Defaults to equal.
     priority      = "critical" # Options are: critical, or warning. Defaults to critical.
   }
 
@@ -127,7 +127,7 @@ resource "newrelic_alert_condition" "mobile_crash_rate" {
 
   # Required
   policy_id = newrelic_alert_policy.policy.id
-  name        = "Mobile's Crash rate >${var.mobile_crash_rate}% for ${var.condition_duration} mins"
+  name        = "Mobile's Crash rate above ${var.mobile_crash_rate}% for ${var.condition_duration} mins"
   type        = "mobile_metric"
 
   # for Mobile Browser apps, it only works hardcoded until NR provider 2.0 is released.
@@ -141,7 +141,7 @@ resource "newrelic_alert_condition" "mobile_crash_rate" {
     time_function = "all" # Options are all or any.
 
     # Optional
-    operator      = "below" # Options are: above, below, or equal. Defaults to equal.
+    operator      = "above" # Options are: above, below, or equal. Defaults to equal.
     priority      = "critical" # Options are: critical, or warning. Defaults to critical.
   }
 
