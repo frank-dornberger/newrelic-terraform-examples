@@ -1,4 +1,4 @@
-# nr-one-dashboard
+# newrelic-terraform-examples
 
 ## Introduction
 If you haven't worked with Terraform before, you may want to read this article: https://www.terraform.io/intro/index.html
