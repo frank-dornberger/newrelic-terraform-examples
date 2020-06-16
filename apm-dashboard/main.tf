@@ -19,5 +19,5 @@ terraform {
 # https://www.terraform.io/docs/providers/newrelic/index.html#argument-reference
 provider "newrelic" {
   api_key = var.my_admin_api_key
-  api_url = "https://api.eu.newrelic.com/v2"
+  api_url = var.new_relic_rest_api_url
 }
