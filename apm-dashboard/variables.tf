@@ -1,3 +1,7 @@
+variable "account_id" {
+  description = "The default New Relic account ID to which the configs are to apply."
+}
+
 variable "app_duration_sla" {
   description = "The SLA in ms of your Application response time. Default 500"
   default     = 500
@@ -25,14 +29,14 @@ variable "my_admin_api_key" {
   description = "The New Relic Admin API key required to create Dashboards."
 }
 
-variable "new_relic_rest_api_url" {
-  description = "The REST API Endpoint for your account. It depends on the regiof of your account. Options are https://api.newrelic.com/v2 or https://api.eu.newrelic.com/v2. Default is https://api.newrelic.com/v2"
-  default     =  "https://api.newrelic.com/v2"
-}
-
 variable "non_http_20x_rate" {
   description = "The SLA in percents of your HTTP responses being non 20x. Default is 5"
   default     = 5
+}
+
+variable "region" {
+  description = "The region of your New Relic account. Default is US."
+  default     = "US"
 }
 
 variable "third_party_duration_sla" {

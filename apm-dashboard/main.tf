@@ -9,7 +9,7 @@
 
 terraform {
   required_providers {
-    newrelic = ">= 1.19.0"
+    newrelic = ">= 2.0.0"
   }
   required_version = ">= 0.12.0"
 }
@@ -18,6 +18,7 @@ terraform {
 # Other values that can be set are found here: 
 # https://www.terraform.io/docs/providers/newrelic/index.html#argument-reference
 provider "newrelic" {
-  api_key = var.my_admin_api_key
-  api_url = var.new_relic_rest_api_url
+  account_id    = var.account_id
+  admin_api_key = var.my_admin_api_key
+  region        = var.region
 }
