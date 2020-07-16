@@ -1,8 +1,19 @@
 # To cofigure this example well, it's advised to look at this documentation:
 # https://www.terraform.io/docs/providers/newrelic/r/alert_condition.html
 
-data "newrelic_application" "app" {
+data "newrelic_entity" "app" {
   name = var.app_name
+  domain = "APM"
+}
+
+data "newrelic_entity" "browser" {
+  name = var.browser_name
+  domain = "BROWSER"
+}
+
+data "newrelic_entity" "mobile" {
+  name = var.mobile_name
+  domain = "MOBILE"
 }
 
 data "newrelic_key_transaction" "txn" {
@@ -12,6 +23,12 @@ data "newrelic_key_transaction" "txn" {
 resource "newrelic_alert_policy" "policy" {
   name = var.policy_name
   incident_preference = var.policy_incident_preference
+
+  lifecycle {
+    ignore_changes = [
+      account_id,
+    ]
+  }
 }
 
 resource "newrelic_alert_condition" "apm_apdex" {
@@ -22,7 +39,7 @@ resource "newrelic_alert_condition" "apm_apdex" {
   policy_id = newrelic_alert_policy.policy.id
   name        = "${var.app_name}'s Apdex below ${var.apdex_threshold} for ${var.condition_duration} mins"
   type        = "apm_app_metric"
-  entities    = [data.newrelic_application.app.id]
+  entities    = [data.newrelic_entity.app.application_id]
   metric      = "apdex"
   
   term {
@@ -93,9 +110,7 @@ resource "newrelic_alert_condition" "browser_response_time" {
   policy_id = newrelic_alert_policy.policy.id
   name        = "Browser Page Load Time above ${var.browser_duration_threshold}s for ${var.condition_duration} mins"
   type        = "browser_metric"
-
-  # for isolated Browser apps, it only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/309 is resolved. 
-  entities    = [var.browser_id]
+  entities    = [data.newrelic_entity.browser.application_id]
   metric      = "total_page_load"
   
   term {
@@ -123,15 +138,13 @@ resource "newrelic_alert_condition" "browser_response_time" {
 
 resource "newrelic_alert_condition" "mobile_crash_rate" {
   # If this condition is not desired, set count = 0 or remove the resource.
-  count = 0
+  count = 1
 
   # Required
   policy_id = newrelic_alert_policy.policy.id
   name        = "Mobile's Crash rate above ${var.mobile_crash_rate}% for ${var.condition_duration} mins"
   type        = "mobile_metric"
-
-  # for Mobile Browser apps, it only works hardcoded until NR provider 2.0 is released.
-  entities    = [var.mobile_id]
+  entities    = [data.newrelic_entity.mobile.id]
   metric      = "mobile_crash_rate"
   
   term {

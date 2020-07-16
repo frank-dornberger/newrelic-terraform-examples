@@ -15,7 +15,7 @@ resource "newrelic_alert_channel" "email" {
 
 resource "newrelic_alert_channel" "slack" {
   # If you dont want this resource, uncomment the below line.
-  # count = 0
+  count = 0
   name = var.channel_name != "" ? var.channel_name : "Example Slack Channel"
   type = "slack"
 
@@ -30,7 +30,7 @@ resource "newrelic_alert_channel" "slack" {
 
 resource "newrelic_alert_channel" "opsgenie" {
   # If you dont want this resource, uncomment the below line.
-  # count = 0
+  count = 0
   name = var.channel_name != "" ? var.channel_name : "Example OpsGenie Channel"
   type = "opsgenie"
 
@@ -48,7 +48,7 @@ resource "newrelic_alert_channel" "opsgenie" {
 
 resource "newrelic_alert_channel" "pagerduty" {
   # If you dont want this resource, uncomment the below line.
-  # count = 0
+  count = 0
   name = var.channel_name != "" ? var.channel_name : "Example PagerDuty Channel"
   type = "pagerduty"
 
@@ -60,7 +60,7 @@ resource "newrelic_alert_channel" "pagerduty" {
 
 resource "newrelic_alert_channel" "victorops" {
   # If you dont want this resource, uncomment the below line.
-  # count = 0
+  count = 0
   name = var.channel_name != "" ? var.channel_name : "Example VictorOps Channel"
   type = "victorops"
 
@@ -73,7 +73,7 @@ resource "newrelic_alert_channel" "victorops" {
 
 resource "newrelic_alert_channel" "webhook" {
   # If you dont want this resource, uncomment the below line.
-  # count = 0
+  count = 0
   name = var.channel_name != "" ? var.channel_name : "Example Webhook Channel"
   type = "webhook"
 

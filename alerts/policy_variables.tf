@@ -2,6 +2,10 @@
 # GENERAL VARIABLES                  #
 ######################################
 
+variable "account_id" {
+  description = "The default New Relic account ID to which the configs are to apply."
+}
+
 variable "maintenance" {
   description = "Defines whether Alert conditions are enabled or disabled. In maintenance mode, all conditions are disabled. Default is false"
   default     = false
@@ -12,9 +16,13 @@ variable "my_admin_api_key" {
   description = "The New Relic Admin API key required to create Dashboards."
 }
 
-variable "new_relic_rest_api_url" {
-  description = "The REST API Endpoint for your account. It depends on the regiof of your account. Options are https://api.newrelic.com/v2 or https://api.eu.newrelic.com/v2. Default is https://api.newrelic.com/v2"
-  default     =  "https://api.newrelic.com/v2"
+variable "my_api_key" {
+  description = "The New Relic Personal API key required to use GraphQL."
+}
+
+variable "region" {
+  description = "The region of your New Relic account. Default is US."
+  default     = "US"
 }
 
 ######################################
@@ -63,8 +71,8 @@ variable "browser_duration_threshold" {
   default     = "7"
 }
 
-variable "browser_id" {
-  description = "The ID of the browser app for which the policy will be generated. No default value."
+variable "browser_name" {
+  description = "The name of the browser app for which the policy will be generated. No default value."
 }
 
 ######################################
@@ -84,11 +92,11 @@ variable "key_transaction_name" {
 # MOBILE VARIABLES                   #
 ######################################
 
-variable "mobile_id" {
-  description = "The ID of the mobile app for which the policy will be generated. No default value."
-}
-
 variable "mobile_crash_rate" {
   description = "The crash rate (in %) observed by the Alert condition. Defaults to 1.0"
   default     = "1.0"
+}
+
+variable "mobile_name" {
+  description = "The name of the mobile app for which the policy will be generated. No default value."
 }
