@@ -1,5 +1,5 @@
 # To cofigure this example well, it's advised to look at this documentation:
-# https://www.terraform.io/docs/providers/newrelic/r/alert_condition.html
+# https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/alert_condition
 
 data "newrelic_entity" "app" {
   name = var.app_name

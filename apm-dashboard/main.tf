@@ -1,5 +1,5 @@
 # For further details on how to write Dashboards using Terraform, please visit:
-# https://www.terraform.io/docs/providers/newrelic/r/dashboard.html
+# https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/dashboard
 
 # The default environment variable is NEWRELIC_API_KEY and picked up if no 
 # variable is set in the provider configuration. To be able to explicitly
@@ -16,7 +16,7 @@ terraform {
 
 # The API URL is required, as it would otherwise default to the US region.
 # Other values that can be set are found here: 
-# https://www.terraform.io/docs/providers/newrelic/index.html#argument-reference
+# https://registry.terraform.io/providers/newrelic/newrelic/latest/docs#argument-reference
 provider "newrelic" {
   account_id    = var.account_id
   admin_api_key = var.my_admin_api_key
