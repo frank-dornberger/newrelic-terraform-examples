@@ -64,7 +64,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "facet_bar_chart"
     nrql = "SELECT average(duration*1000) FROM Transaction FACET appName SINCE 15 minutes ago LIMIT 7"
     
-    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    # only works hardcoded until https://github.com/newrelic/terraform-provider-newrelic/issues/322 is resolved.
     drilldown_dashboard_id = var.dashboard_id
 
     row = 1
@@ -78,7 +78,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "facet_bar_chart"
     nrql = "SELECT filter(count(*), WHERE error IS true)*100/count(*) AS 'Error percentage' FROM Transaction SINCE 15 minutes ago FACET appName LIMIT 7"
     
-    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    # only works hardcoded until https://github.com/newrelic/terraform-provider-newrelic/issues/322 is resolved.
     drilldown_dashboard_id = var.dashboard_id
 
     row = 1
@@ -223,7 +223,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "facet_bar_chart"
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET name limit 50"
     
-    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    # only works hardcoded until https://github.com/newrelic/terraform-provider-newrelic/issues/322 is resolved.
     drilldown_dashboard_id = var.dashboard_id
 
     row = 9
@@ -237,7 +237,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "facet_pie_chart"
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET httpResponseCode limit 50"
     
-    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    # only works hardcoded until https://github.com/newrelic/terraform-provider-newrelic/issues/322 is resolved.
     drilldown_dashboard_id = var.dashboard_id
 
     row = 9
@@ -251,7 +251,7 @@ resource "newrelic_dashboard" "exampledash" {
     visualization = "facet_pie_chart"
     nrql = "SELECT count(*) FROM Transaction SINCE 1 week ago FACET host limit 50"
     
-    # only works hardcoded until https://github.com/terraform-providers/terraform-provider-newrelic/issues/322 is resolved.
+    # only works hardcoded until https://github.com/newrelic/terraform-provider-newrelic/issues/322 is resolved.
     drilldown_dashboard_id = var.dashboard_id
 
     row = 12

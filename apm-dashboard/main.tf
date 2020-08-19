@@ -1,15 +1,17 @@
 # For further details on how to write Dashboards using Terraform, please visit:
 # https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/dashboard
 
-# The default environment variable is NEWRELIC_API_KEY and picked up if no 
-# variable is set in the provider configuration. To be able to explicitly
+# To understand which type of API key is required for which resource, please refer to this table:
+# https://registry.terraform.io/providers/newrelic/newrelic/latest/docs#resources
+
+# The default environment variable for a Dashboard is NEW_RELIC_ADMIN_API_KEY
+# and picked up if no variable is set in the provider configuration. To be able to explicitly
 # manage the variable and work with the below example, you can run this in 
 # your CLI: export TF_VAR_my_admin_api_key=NRAA-0123456789abcdef
-#
 
 terraform {
   required_providers {
-    newrelic = ">= 2.0.0"
+    newrelic = ">= 2.2.1"
   }
   required_version = ">= 0.12.0"
 }
